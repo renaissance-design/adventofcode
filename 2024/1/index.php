@@ -1,25 +1,48 @@
 <?php
 
-function getResult( $file ) {
-    if( file_exists( $file ) && is_readable( $file ) ) {
+class Day1 {
 
-		foreach( file( $file ) as $line ) {
+    private $left;
+    private $right;
 
-			$split = explode( '   ', $line );
+    public function __construct($file) {
+        $this->populateLists($file);
+    }
 
-			$left[] = (int) $split[0];
-			$right[] = (int) $split[1];
-		}
+    private function populateLists($file) {
 
-		sort( $left, SORT_NUMERIC );
-		sort( $right, SORT_NUMERIC );
-		
-		for( $i = 0; $i <= count( $left ); $i++ ) {
-			$results[$i] = ( $left[$i] > $right[$i] ? $left[$i] - $right[$i] : $right[$i] - $left[$i] );
-		}
+        if (file_exists($file) && is_readable($file)) {
 
-		return array_sum( $results );
-	}
+            foreach (file($file) as $line) {
+
+                $split = explode('   ', $line);
+
+                $this->left[] = (int) $split[0];
+                $this->right[] = (int) $split[1];
+            }
+        }
+    }
+
+    public function solvePart1() {
+        sort($this->left, SORT_NUMERIC);
+        sort($this->right, SORT_NUMERIC);
+
+        for ($i = 0; $i < count($this->left); $i++) {
+            $results[$i] = ( $this->left[$i] > $this->right[$i] ? $this->left[$i] - $this->right[$i] : $this->right[$i] - $this->left[$i] );
+        }
+
+        return array_sum($results);
+    }
+
+    public function solvePart2() {
+        for ($i = 0; $i < count($this->left); $i++) {
+            $results[$i] = $this->left[$i] * count(array_keys($this->right, $this->left[$i]));
+        }
+        return array_sum($results);
+    }
 }
 
-echo 'Result: ' . getResult( 'input.txt' );
+$day1 = new Day1('input.txt');
+
+echo 'Part 1: ' . $day1->solvePart1() . "\r\n";
+echo 'Part 2: ' . $day1->solvePart2();
