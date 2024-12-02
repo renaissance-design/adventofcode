@@ -28,9 +28,30 @@ class Day2 {
             }
             $safetyFactor = abs($report[$i] - ($report[$i + 1]));
             if ($safetyFactor == 0 || $safetyFactor > 3) {
+
                 return false;
             }
         }
+        return true;
+    }
+
+    private function isSafeFudged($report) {
+        $trend = ($report[0] < $report[1] ? 'inc' : 'dec');
+        $dangerLevel = 0;
+
+        for ($i = 0; $i < (count($report) - 1); $i++) {
+            if (($trend == 'inc' && $report[$i] > $report[$i + 1]) || ($trend == 'dec' && $report[$i] < $report[$i + 1])) {
+                $dangerLevel++;
+            }
+            $safetyFactor = abs($report[$i] - ($report[$i + 1]));
+            if ($safetyFactor == 0 || $safetyFactor > 3) {
+                $dangerLevel++;
+            }
+            if($dangerLevel > 1) {
+                return false;
+            }
+        }
+        
         return true;
     }
 
@@ -43,8 +64,19 @@ class Day2 {
         }
         return $safe;
     }
+
+    public function solvePart2() {
+        $safe = 0;
+        foreach ($this->reports as $report) {
+            if ($this->isSafeFudged($report)) {
+                $safe++;
+            }
+        }
+        return $safe;
+    }
 }
 
 $day2 = new Day2('input.txt');
 
 echo 'Part 1: ' . $day2->solvePart1() . "\r\n";
+echo 'Part 2: ' . $day2->solvePart2();
