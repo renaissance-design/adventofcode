@@ -5,9 +5,9 @@ class Day3 {
     private $program;
     private $instructions;
     private $controls;
-	private $tape;
+    private $tape;
     private $output;
-	private $output2;
+    private $output2;
 
     public function __construct($file) {
         $this->readInput($file);
@@ -24,21 +24,21 @@ class Day3 {
     private function extractInstructions($program) {
         preg_match_all('/mul\([0-9]+,[0-9]+\)/', $this->program, $this->instructions, PREG_OFFSET_CAPTURE);
 
-		foreach($this->instructions[0] as $value) {
-			$this->tape[$value[1]] = $value[0];
-		}
+        foreach ($this->instructions[0] as $value) {
+            $this->tape[$value[1]] = $value[0];
+        }
     }
-	
-	private function extractControls($program) {
-		preg_match_all('/do\(\)/', $this->program, $do, PREG_OFFSET_CAPTURE);
-		preg_match_all("/don't\(\)/", $this->program, $dont, PREG_OFFSET_CAPTURE);
-		foreach($do[0] as $value) {
-			$this->tape[$value[1]] = $value[0];
-		}
-		foreach($dont[0] as $value) {
-			$this->tape[$value[1]] = $value[0];
-		}
-	}
+
+    private function extractControls($program) {
+        preg_match_all('/do\(\)/', $this->program, $do, PREG_OFFSET_CAPTURE);
+        preg_match_all("/don't\(\)/", $this->program, $dont, PREG_OFFSET_CAPTURE);
+        foreach ($do[0] as $value) {
+            $this->tape[$value[1]] = $value[0];
+        }
+        foreach ($dont[0] as $value) {
+            $this->tape[$value[1]] = $value[0];
+        }
+    }
 
     private function executeInstructions($instructions) {
         foreach ($instructions[0] as $instruction) {
@@ -48,25 +48,21 @@ class Day3 {
             $this->output[] = $instructionClean[0] * $instructionClean[1];
         }
     }
-    
+
     private function executeTape($tape) {
-		$yoda = true;
-		foreach ($tape as $value) {
-			if($value == "don't()") {
-				$yoda = false;
-			}
-			elseif($value == 'do()') {
-				$yoda = true;
-			}
-			elseif($yoda == true) {
-				$instructionsClean[] = explode(',', str_replace('mul(', '', str_replace(')', '', $value)));
-			}
-			
-		}
-		foreach ($instructionsClean as $instructionClean) {
+        $yoda = true;
+        foreach ($tape as $value) {
+            if ($value == "don't()") {
+                $yoda = false;
+            } elseif ($value == 'do()') {
+                $yoda = true;
+            } elseif ($yoda == true) {
+                $instructionsClean[] = explode(',', str_replace('mul(', '', str_replace(')', '', $value)));
+            }
+        }
+        foreach ($instructionsClean as $instructionClean) {
             $this->output2[] = $instructionClean[0] * $instructionClean[1];
         }
-        
     }
 
     public function solvePart1() {
@@ -74,13 +70,13 @@ class Day3 {
         $this->executeInstructions($this->instructions);
         return array_sum($this->output);
     }
-    
+
     public function solvePart2() {
         $this->extractInstructions($this->program);
-		$this->extractControls($this->program);
-		ksort($this->tape);
+        $this->extractControls($this->program);
+        ksort($this->tape);
         $this->executeTape($this->tape);
-        return array_sum($this->output2);        
+        return array_sum($this->output2);
     }
 }
 
